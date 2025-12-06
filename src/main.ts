@@ -9,6 +9,14 @@ const config: Phaser.Types.Core.GameConfig = {
 	parent: 'app',
 	width: 800,
 	height: 640,
+	scale: {
+		mode: Phaser.Scale.FIT,
+		autoCenter: Phaser.Scale.CENTER_BOTH,
+		// Force landscape orientation
+		orientation: Phaser.Scale.Orientation.LANDSCAPE,
+		// Round pixel values to integers to prevent sub-pixel rendering artifacts
+		autoRound: true
+	},
 	physics: {
 		default: 'arcade',
 		arcade: {
