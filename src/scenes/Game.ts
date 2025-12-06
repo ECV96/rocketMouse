@@ -29,12 +29,20 @@ export default class Game extends Phaser.Scene {
     private scoreDistanceText!: Phaser.GameObjects.Text
     private lastMouseX = 0
 
+    private totalCoins = 0
+    private totalCoinsText!: Phaser.GameObjects.Text
+    private highScoreDistance = 0
+    private highScoreText!: Phaser.GameObjects.Text
+
     private rocketMouse!: RocketMouse
 
     init() {
         this.score = 0
         this.scoreDistance = 0
         this.lastMouseX = 0
+
+        this.totalCoins = parseInt(localStorage.getItem('rocket-mouse-total-coins') || '0', 10)
+        this.highScoreDistance = parseInt(localStorage.getItem('rocket-mouse-high-score') || '0', 10)
     }
 
     constructor() {
@@ -91,6 +99,20 @@ export default class Game extends Phaser.Scene {
             padding: { left: 15, right: 15, top: 10, bottom: 10 }
         }).setScrollFactor(0)
 
+        this.totalCoinsText = this.add.text(width - 10, 10, `Total Coins: ${this.totalCoins}`, {
+            fontSize: '24px',
+            color: '#080808',
+            backgroundColor: '#F8E71C',
+            padding: { left: 15, right: 15, top: 10, bottom: 10 }
+        }).setOrigin(1, 0).setScrollFactor(0)
+
+        this.highScoreText = this.add.text(width - 10, 40 + 10 + 10, `High Score: ${Math.floor(this.highScoreDistance / 10)}m`, {
+            fontSize: '24px',
+            color: '#080808',
+            backgroundColor: '#F8E71C',
+            padding: { left: 15, right: 15, top: 10, bottom: 10 }
+        }).setOrigin(1, 0).setScrollFactor(0)
+
         this.lastMouseX = this.rocketMouse.x
     }
 
@@ -119,6 +141,10 @@ export default class Game extends Phaser.Scene {
         }
         this.score += 1
         this.scoreText.text = `Score: ${this.score}`
+
+        this.totalCoins += 1
+        this.totalCoinsText.text = `Total Coins: ${this.totalCoins}`
+        localStorage.setItem('rocket-mouse-total-coins', this.totalCoins.toString())
     }
 
     private spawnCoins() {
@@ -299,5 +325,11 @@ export default class Game extends Phaser.Scene {
 
         this.lastMouseX = x
         this.scoreDistanceText.text = `Distance: ${Math.floor(this.scoreDistance / 10)}m`
+
+        if (this.scoreDistance > this.highScoreDistance) {
+            this.highScoreDistance = this.scoreDistance
+            this.highScoreText.text = `High Score: ${Math.floor(this.highScoreDistance / 10)}m`
+            localStorage.setItem('rocket-mouse-high-score', this.highScoreDistance.toString())
+        }
     }
 }
